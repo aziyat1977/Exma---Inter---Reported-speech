@@ -346,10 +346,28 @@ const App: React.FC = () => {
         const direct = parse(data.exampleDirect);
         const reported = parse(data.exampleReported);
 
+        const handleReplay = () => {
+             setTimelineStep(0);
+             setTimeout(() => {
+                 setTimelineStep(1);
+                 setTimeout(() => setTimelineStep(2), 1000);
+             }, 100);
+        };
+
         return (
             <div className="w-full h-full flex flex-col items-center justify-center relative p-8 overflow-hidden bg-black/90">
                 {renderLanguageToggle(currentSlide.exerciseTeaching)}
                 {renderHelpOverlay(currentSlide.exerciseTeaching)}
+
+                {/* Replay Button */}
+                <button 
+                    onClick={handleReplay}
+                    className="absolute bottom-8 left-8 text-white/30 hover:text-gold-500 transition-colors flex items-center gap-2 z-50 group"
+                    title="Replay Animation"
+                >
+                    <RotateCcw size={20} className="group-hover:-rotate-180 transition-transform duration-700" /> 
+                    <span className="font-bebas tracking-widest text-sm">REPLAY</span>
+                </button>
 
                 {/* THE TIME PORTAL */}
                 <div className="time-portal"></div>
@@ -378,7 +396,7 @@ const App: React.FC = () => {
                     </div>
 
                     {/* ULTRA PARTICLE ANIMATION */}
-                    {timelineStep === 1 && (
+                    {timelineStep >= 1 && (
                         <div className="ultra-particle">
                             {direct.highlight}
                         </div>
