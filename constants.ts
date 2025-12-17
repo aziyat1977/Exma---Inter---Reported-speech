@@ -30,6 +30,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 1: The 'Backshift' Boogie",
                 description: "Statements: Present ➡️ Past",
                 rule: "When reporting a statement from the past, we usually move the tense one step back.",
+                timeline: {
+                    tenseFrom: "Present Simple",
+                    tenseTo: "Past Simple",
+                    exampleDirect: "I [am] Barry Allen.",
+                    exampleReported: "He said he [was] Barry Allen."
+                },
                 questions: [
                     { q: "Barry explained that Bruce ____ (sit) in his second favorite chair.", a: "was sitting" },
                     { q: "Barry claimed that the person in the photo ____ (be) a very attractive Jewish boy.", a: "was" },
@@ -41,6 +47,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 2: The Inquisition",
                 description: "Wh- Questions",
                 rule: "Word order changes back to normal (Subject + Verb). No 'do' or 'did'.",
+                timeline: {
+                    tenseFrom: "Question Order",
+                    tenseTo: "Statement Order",
+                    exampleDirect: "Who [are] you?",
+                    exampleReported: "He asked who I [was]."
+                },
                 questions: [
                     { q: "Bruce asked Barry what his abilities ____.", a: "were" },
                     { q: "Barry wondered why there ____ a total stranger in his house.", a: "was" },
@@ -52,6 +64,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 3: Yes/No Questions & Modals",
                 description: "If / Whether / Could / Would",
                 rule: "Use 'if' or 'whether'. Can ➡️ Could. Will ➡️ Would.",
+                timeline: {
+                    tenseFrom: "Direct Question",
+                    tenseTo: "If / Whether",
+                    exampleDirect: "[Are] you fast?",
+                    exampleReported: "He asked [if] I was fast."
+                },
                 questions: [
                     { q: "Barry asked Bruce ____ he was the Batman.", a: "if / whether" },
                     { q: "Bruce asked Barry ____ he was fast.", a: "if / whether" },
@@ -63,6 +81,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 4: Commands & Requests",
                 description: "Infinitives: (not) to + verb",
                 rule: "For commands ('Stop!'), we use tell/ask + object + (not) to + infinitive.",
+                timeline: {
+                    tenseFrom: "Imperative",
+                    tenseTo: "Infinitive",
+                    exampleDirect: "[Stop] right there.",
+                    exampleReported: "He told him [to stop] right there."
+                },
                 questions: [
                     { q: "Bruce ordered Barry ____ (tell) him about the photo.", a: "to tell" },
                     { q: "Barry told Bruce ____ (stop) right there.", a: "to stop" },
@@ -74,6 +98,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 5: Reporting Explanations",
                 description: "Complex Ideas",
                 rule: "Subject + explained + that + subject + verb (backshifted)",
+                timeline: {
+                    tenseFrom: "Explanation",
+                    tenseTo: "Explained That...",
+                    exampleDirect: "It [is] an oversimplification.",
+                    exampleReported: "He explained that it [was] an oversimplification."
+                },
                 questions: [
                     { q: "Barry explained that the Speed Force ____ (cause) him to burn a tremendous amount of calories.", a: "caused" },
                     { q: "He described himself as a 'snack hole' because he ____ (eat) so much.", a: "ate" },
@@ -85,6 +115,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 6: Reporting 'Yes' and 'No'",
                 description: "Agreed, Confirmed, Accepted",
                 rule: "We rarely say 'He said yes.' We use meaningful verbs.",
+                timeline: {
+                    tenseFrom: "Yes / No",
+                    tenseTo: "Reporting Verb",
+                    exampleDirect: "[Yeah], I need friends.",
+                    exampleReported: "He [admitted] that he needed friends."
+                },
                 questions: [
                     { q: "When Bruce asked if he was in, Barry immediately ____ (agree) to join.", a: "agreed" },
                     { q: "Bruce asked if he was the Batman, but he never explicitly ____ (confirm) it with words.", a: "confirmed" },
@@ -96,6 +132,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 7: Reporting Thoughts",
                 description: "Realizations",
                 rule: "We report what people think or realize, not just what they say.",
+                timeline: {
+                    tenseFrom: "Inner Monologue",
+                    tenseTo: "Past Realization",
+                    exampleDirect: "(Thinks: It [is] Bruce Wayne!)",
+                    exampleReported: "He realized it [was] Bruce Wayne."
+                },
                 questions: [
                     { q: "When Bruce threw the Batarang, Barry suddenly ____ (realize) who Bruce was.", a: "realized" },
                     { q: "Bruce likely ____ (think) Barry was a bit strange.", a: "thought" },
@@ -124,6 +166,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 1: Complaints & Explanations",
                 description: "Present to Past",
                 rule: "Backshift! Watch out for pronouns (I ➡️ he, my ➡️ his).",
+                timeline: {
+                    tenseFrom: "Present Simple",
+                    tenseTo: "Past Simple",
+                    exampleDirect: "This [is] broken.",
+                    exampleReported: "He complained that it [was] broken."
+                },
                 questions: [
                     { q: "The worker muttered that it ____ (be) Nathan Drake again.", a: "was" },
                     { q: "Nathan explained that treasure hunting ____ (be) a dirty business.", a: "was" },
@@ -135,6 +183,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 2: Short Answers & Agreements",
                 description: "Reporting Actions",
                 rule: "Yes ➡️ Agreed. No ➡️ Denied/Refused.",
+                timeline: {
+                    tenseFrom: "Action / Response",
+                    tenseTo: "Reporting Verb",
+                    exampleDirect: "[Yes], very.",
+                    exampleReported: "He [agreed] it was very dirty."
+                },
                 questions: [
                     { q: "When Nathan said it was a dirty business, the worker ____ that it was.", a: "agreed" },
                     { q: "When Nathan claimed the machine was broken, the clerk ____ it.", a: "denied" },
@@ -146,6 +200,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 3: Reporting 'Real' Facts",
                 description: "Timeless Truths (Backshifted for practice)",
                 rule: "Sometimes facts stay true, but we backshift for narrative consistency.",
+                timeline: {
+                    tenseFrom: "General Truth",
+                    tenseTo: "Reported Fact",
+                    exampleDirect: "That [is] how it works.",
+                    exampleReported: "He said that [was] how it worked."
+                },
                 questions: [
                     { q: "The clerk explained that that ____ (be) how the machine worked.", a: "was" },
                     { q: "Nathan realized that treasure hunting ____ (make) the car very dirty.", a: "made" },
@@ -157,6 +217,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 4: Reporting Commands (Implicit)",
                 description: "Contextual Commands",
                 rule: "Use verbs like: warn, remind, call.",
+                timeline: {
+                    tenseFrom: "Implicit Command",
+                    tenseTo: "Infinitive",
+                    exampleDirect: "Car's ready!",
+                    exampleReported: "He called to [remind] him."
+                },
                 questions: [
                     { q: "The worker called out to ____ (remind) Mr. Drake that his car was ready.", a: "remind" },
                     { q: "The sign on the wall warned customers ____ (stop) their engines.", a: "to stop" },
@@ -168,6 +234,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 5: Reporting Contradictions",
                 description: "The Argument",
                 rule: "Verbs: insisted, denied, argued, claimed.",
+                timeline: {
+                    tenseFrom: "Contradiction",
+                    tenseTo: "Insisted/Denied",
+                    exampleDirect: "It's [not] broken.",
+                    exampleReported: "He [insisted] it wasn't broken."
+                },
                 questions: [
                     { q: "Nathan claimed the machine was broken, but the clerk ____ (insist) that it wasn't.", a: "insisted" },
                     { q: "The clerk argued that that ____ (be) simply how the machine worked.", a: "was" },
@@ -179,6 +251,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 6: Reporting Observations",
                 description: "Sensory Verbs",
                 rule: "Subject + noticed/saw + that...",
+                timeline: {
+                    tenseFrom: "Observation",
+                    tenseTo: "Noticed That",
+                    exampleDirect: "(Sees spider)",
+                    exampleReported: "He [saw] a spider."
+                },
                 questions: [
                     { q: "The worker ____ (notice) that Nathan was back again.", a: "noticed" },
                     { q: "Nathan ____ (see) a spider crawling on the chair.", a: "saw" },
@@ -190,6 +268,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 7: Reporting Greetings",
                 description: "Social niceties",
                 rule: "Verbs: greeted, thanked, bid farewell.",
+                timeline: {
+                    tenseFrom: "Greeting",
+                    tenseTo: "Greeted",
+                    exampleDirect: "See ya.",
+                    exampleReported: "He [said] goodbye."
+                },
                 questions: [
                     { q: "The worker ____ (greet) Nathan by saying 'Not again.'", a: "greeted" },
                     { q: "Nathan ____ (thank) the worker for the wash.", a: "thanked" },
@@ -220,6 +304,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 1: Commands & Imperatives",
                 description: "Don't do it!",
                 rule: "Ordered/Told/Warned + object + (not) to + verb.",
+                timeline: {
+                    tenseFrom: "Imperative",
+                    tenseTo: "Infinitive",
+                    exampleDirect: "[Put] your hands at 9 and 3.",
+                    exampleReported: "He told him [to put] his hands at 9 and 3."
+                },
                 questions: [
                     { q: "The instructor told Peter ____ (put) his hands at 9 and 3.", a: "to put" },
                     { q: "He warned Peter ____ (not / be) a hero.", a: "not to be" },
@@ -231,6 +321,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 2: Reporting Uncertainty",
                 description: "Questions & Thoughts",
                 rule: "Past Simple ➡️ Past Perfect (had + V3).",
+                timeline: {
+                    tenseFrom: "Past Simple",
+                    tenseTo: "Past Perfect",
+                    exampleDirect: "I [thought] it was 10 and 2.",
+                    exampleReported: "He said he [had thought] it was 10 and 2."
+                },
                 questions: [
                     { q: "Peter replied that he ____ (think) the rule was 10 and 2.", a: "had thought" },
                     { q: "The instructor asked if there ____ (be) a Parker Peter in the room.", a: "was" },
@@ -242,6 +338,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 3: Future in the Past",
                 description: "Predictions",
                 rule: "'is going to' ➡️ 'was going to'. 'will' ➡️ 'would'.",
+                timeline: {
+                    tenseFrom: "Future (going to)",
+                    tenseTo: "Future in Past",
+                    exampleDirect: "It [is going to] be close.",
+                    exampleReported: "He said it [was going to] be close."
+                },
                 questions: [
                     { q: "The instructor stated that Peter ____ (be going to) lose five points.", a: "was going to" },
                     { q: "He warned that it ____ (be going to) be a close result.", a: "was going to" },
@@ -253,6 +355,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 4: Mixed Reporting",
                 description: "The Chaos",
                 rule: "Combining statements, questions, and commands.",
+                timeline: {
+                    tenseFrom: "Mixed Tenses",
+                    tenseTo: "Reported Narrative",
+                    exampleDirect: "Did I pass?",
+                    exampleReported: "He asked if he [had passed]."
+                },
                 questions: [
                     { q: "Peter mentioned that the car ____ (belong) to his friend Tony.", a: "belonged" },
                     { q: "The instructor mumbled that he ____ (notice) everything, even the eyeballing.", a: "noticed" },
@@ -264,6 +372,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 5: Reporting Threats",
                 description: "Warnings",
                 rule: "Subject + threatened + to + infinitive OR Subject + warned + that...",
+                timeline: {
+                    tenseFrom: "Threat",
+                    tenseTo: "Threatened To",
+                    exampleDirect: "You fail, I fail.",
+                    exampleReported: "He [threatened] to fail him."
+                },
                 questions: [
                     { q: "The instructor ____ (threaten) to fail Peter if he failed himself.", a: "threatened" },
                     { q: "He ____ (warn) Peter that he would lose points for eyeballing him.", a: "warned" },
@@ -275,6 +389,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 6: Reporting Apologies",
                 description: "Gerunds",
                 rule: "Subject + apologized + for + -ing verb.",
+                timeline: {
+                    tenseFrom: "Sorry",
+                    tenseTo: "Apologized For",
+                    exampleDirect: "Sorry!",
+                    exampleReported: "He [apologized for] taking his hands off."
+                },
                 questions: [
                     { q: "Peter ____ (apologize) for taking his hands off the wheel.", a: "apologized" },
                     { q: "Peter said 'Sorry' because he ____ (make) a mistake.", a: "had made" },
@@ -286,6 +406,12 @@ export const SCENES: SceneData[] = [
                 title: "Exercise 7: Reporting Exclamations",
                 description: "Emotion!",
                 rule: "Verbs: exclaimed, shouted, yelled.",
+                timeline: {
+                    tenseFrom: "Exclamation",
+                    tenseTo: "Shouted/Yelled",
+                    exampleDirect: "Whoa!",
+                    exampleReported: "He [shouted] whoa."
+                },
                 questions: [
                     { q: "When the car stopped automatically, the instructor ____ (shout) 'Whoa!'", a: "shouted" },
                     { q: "Peter ____ (ask) in confusion what the instructor had said.", a: "asked" },

@@ -2,6 +2,7 @@ export enum SlideType {
     INTRO = 'intro',
     SCRIPT = 'script',
     EXERCISE_INTRO = 'exercise_intro',
+    TIMELINE = 'timeline',
     CHALLENGE = 'challenge',
     OUTRO = 'outro'
 }
@@ -12,10 +13,18 @@ export interface ContentItem {
     verb?: string;
 }
 
+export interface TimelineData {
+    tenseFrom: string;
+    tenseTo: string;
+    exampleDirect: string; // e.g. "I [am] Batman" (use brackets for highlight)
+    exampleReported: string; // e.g. "He said he [was] Batman"
+}
+
 export interface ExerciseData {
     title: string;
     description: string;
     rule?: string;
+    timeline?: TimelineData;
     questions: { q: string; a: string }[];
 }
 
@@ -27,18 +36,18 @@ export interface SceneData {
     exercises: ExerciseData[];
 }
 
-// The "Playbook" item - a single step in our linear user journey
 export interface PlaybookItem {
     uuid: string;
     type: SlideType;
-    sceneTitle?: string; // For context headers
+    sceneTitle?: string;
     sceneDesc?: string;
     scriptContent?: ContentItem[];
     exerciseTitle?: string;
-    exerciseRule?: string; // Grammar rule to show
+    exerciseRule?: string;
+    timelineData?: TimelineData;
     challengeQ?: string;
     challengeA?: string;
-    options?: string[]; // The Word Bank for Drag & Drop
+    options?: string[];
     totalInSet?: number;
     currentInSet?: number;
 }

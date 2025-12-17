@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { ChevronRight, ChevronLeft, Film, CheckCircle, XCircle, RotateCcw, Clapperboard, Menu, X, Grid } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Film, CheckCircle, XCircle, RotateCcw, Clapperboard, Menu, X, Grid, Clock, ArrowRight } from 'lucide-react';
 import { SCENES } from './constants';
 import { SlideType, PlaybookItem } from './types';
 
@@ -48,26 +48,31 @@ const generatePlaybook = (): PlaybookItem[] => {
                 sceneDesc: ex.description
             });
 
+            // TIMELINE SLIDE (Before exercises)
+            if (ex.timeline) {
+                playlist.push({
+                    uuid: getID(),
+                    type: SlideType.TIMELINE,
+                    sceneTitle: scene.title,
+                    exerciseTitle: ex.title,
+                    timelineData: ex.timeline
+                });
+            }
+
             // Gather all answers in this set to use as distractors
             const allAnswersInSet = ex.questions.map(q => q.a);
 
             // Specific Questions
             ex.questions.forEach((q, qIdx) => {
-                // Create Word Bank: Correct Answer + 3 Random distractors from the set (or generic ones if set is small)
-                // Filter out current answer first
                 const otherAnswers = allAnswersInSet.filter(a => a !== q.a);
-                // If we don't have enough distinct answers, duplication is actually fine for grammar drills 
-                // but let's try to get 3 unique others if possible.
                 const distractors = shuffleArray(otherAnswers).slice(0, 3);
                 
-                // If we still need more (e.g. set size 1), add generic fillers based on tense
                 const fillers = ["is", "was", "had", "would", "told", "asked"];
                 while (distractors.length < 3) {
                    const randomFiller = fillers[Math.floor(Math.random() * fillers.length)];
                    if (randomFiller !== q.a && !distractors.includes(randomFiller)) {
                        distractors.push(randomFiller);
                    } else {
-                       // prevent infinite loop if extremely unlucky
                        distractors.push("did"); 
                        break;
                    }
@@ -107,6 +112,7 @@ const App: React.FC = () => {
     const [feedback, setFeedback] = useState<'neutral' | 'correct' | 'incorrect'>('neutral');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [draggedItem, setDraggedItem] = useState<string | null>(null);
+    const [timelineStep, setTimelineStep] = useState(0);
 
     const currentSlide = playbook[currentIndex];
 
@@ -115,7 +121,18 @@ const App: React.FC = () => {
         setDroppedValue(null);
         setFeedback("neutral");
         setDraggedItem(null);
-    }, [currentIndex]);
+        setTimelineStep(0);
+        
+        // Auto-play timeline animation sequence
+        if (currentSlide.type === SlideType.TIMELINE) {
+            // Step 1: Show Direct (0ms)
+            // Step 2: Start Move (1500ms)
+            setTimeout(() => setTimelineStep(1), 1500);
+            // Step 3: Show Reported (3500ms - after slow travel)
+            setTimeout(() => setTimelineStep(2), 3500);
+        }
+
+    }, [currentIndex, currentSlide]);
 
     // --- NAVIGATION ---
     const nextSlide = () => {
@@ -134,13 +151,11 @@ const App: React.FC = () => {
     // --- DRAG & DROP HANDLERS ---
     const handleDragStart = (e: React.DragEvent, item: string) => {
         setDraggedItem(item);
-        // Effect for drag image if needed, but default is usually okay
         e.dataTransfer.effectAllowed = "move";
-        // e.dataTransfer.setData("text/plain", item); // Not strictly needed if using React state
     };
 
     const handleDragOver = (e: React.DragEvent) => {
-        e.preventDefault(); // Necessary to allow dropping
+        e.preventDefault(); 
         e.dataTransfer.dropEffect = "move";
     };
 
@@ -149,7 +164,6 @@ const App: React.FC = () => {
         if (draggedItem) {
             setDroppedValue(draggedItem);
             
-            // Check Answer Immediately
             const correct = currentSlide.challengeA;
             if (!correct) return;
             
@@ -157,11 +171,9 @@ const App: React.FC = () => {
             
             if (isCorrect) {
                 setFeedback('correct');
-                // Play simplified "snap" sound logic or just wait
                 setTimeout(() => nextSlide(), 1000);
             } else {
                 setFeedback('incorrect');
-                // Clear incorrect value after a moment to let them try again
                 setTimeout(() => {
                     setDroppedValue(null);
                     setFeedback('neutral');
@@ -174,9 +186,7 @@ const App: React.FC = () => {
     // --- RENDERERS ---
 
     const renderMenu = () => {
-        // Group slides by scene for the menu
         const scenes = SCENES.map((scene, idx) => {
-            // Find the index of the INTRO slide for this scene
             const slideIdx = playbook.findIndex(s => s.type === SlideType.INTRO && s.sceneTitle === scene.title);
             return { title: scene.title, index: slideIdx };
         });
@@ -265,10 +275,100 @@ const App: React.FC = () => {
                 {currentSlide.exerciseRule}
             </p>
             <button onClick={nextSlide} className="mt-12 text-gold-500 font-bebas tracking-widest text-xl border-b border-gold-500 pb-1 hover:text-white hover:border-white transition-colors">
-                ENTER DRILL
+                SEE TIMELINE
             </button>
         </div>
     );
+
+    // --- TIMELINE COMPONENT ---
+    const renderTimeline = () => {
+        const data = currentSlide.timelineData;
+        if (!data) return null;
+
+        // Parse brackets for highlighting
+        // e.g. "I [am] Batman" -> parts: "I ", "am", " Batman"
+        const parse = (text: string) => {
+            const parts = text.split(/[\[\]]/);
+            return {
+                prefix: parts[0] || "",
+                highlight: parts[1] || "",
+                suffix: parts[2] || ""
+            };
+        };
+
+        const direct = parse(data.exampleDirect);
+        const reported = parse(data.exampleReported);
+
+        return (
+            <div className="w-full h-full flex flex-col items-center justify-center relative p-8 overflow-hidden bg-black/90">
+                {/* Timeline Axis */}
+                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-700 -translate-y-1/2 z-0"></div>
+                
+                {/* Visual Elements */}
+                <div className="flex justify-between w-full max-w-5xl relative z-10 h-64">
+                    
+                    {/* LEFT: DIRECT (NOW) */}
+                    <div className={`
+                        flex flex-col items-start justify-center transition-all duration-1000
+                        ${timelineStep >= 1 ? 'opacity-30 blur-sm scale-90' : 'opacity-100 scale-100'}
+                    `}>
+                         <div className="text-gold-500 font-bebas text-xl mb-2 flex items-center gap-2">
+                             <Clock size={16} /> DIRECT SPEECH
+                         </div>
+                         <div className="text-3xl md:text-5xl font-cinzel text-white leading-tight">
+                            {direct.prefix}
+                            <span className="text-cinema-red font-bold inline-block relative">
+                                {direct.highlight}
+                                {/* The Moving Particle */}
+                                {timelineStep === 1 && (
+                                    <div className="absolute top-0 left-0 text-cinema-red animate-[timeline-travel_2s_ease-in-out_forwards] z-50 whitespace-nowrap">
+                                        {direct.highlight}
+                                    </div>
+                                )}
+                            </span>
+                            {direct.suffix}
+                         </div>
+                         <div className="mt-4 text-gray-500 font-mono text-sm uppercase border border-gray-700 px-2 py-1 rounded">
+                             {data.tenseFrom}
+                         </div>
+                    </div>
+
+                    {/* CENTER ARROW (Visible during transition) */}
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-1000 ${timelineStep >= 1 ? 'opacity-100' : 'opacity-0'}`}>
+                         <ArrowRight size={48} className="text-gold-500" />
+                    </div>
+
+                    {/* RIGHT: REPORTED (THEN) */}
+                    <div className={`
+                        flex flex-col items-end justify-center text-right transition-all duration-1000 delay-500
+                        ${timelineStep >= 2 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}
+                    `}>
+                         <div className="text-gold-500 font-bebas text-xl mb-2">REPORTED SPEECH</div>
+                         <div className="text-3xl md:text-5xl font-cinzel text-white leading-tight">
+                            {reported.prefix}
+                            <span className="text-green-400 font-bold scale-110 inline-block shadow-green-500/50 drop-shadow-[0_0_10px_rgba(74,222,128,0.5)]">
+                                {reported.highlight}
+                            </span>
+                            {reported.suffix}
+                         </div>
+                         <div className="mt-4 text-gray-500 font-mono text-sm uppercase border border-gray-700 px-2 py-1 rounded">
+                             {data.tenseTo}
+                         </div>
+                    </div>
+                </div>
+
+                <button 
+                    onClick={nextSlide}
+                    className={`
+                        mt-24 px-8 py-3 bg-white/10 border border-gold-500 text-gold-500 hover:bg-gold-500 hover:text-black transition-all duration-500 font-bebas tracking-widest z-20
+                        ${timelineStep >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}
+                    `}
+                >
+                    START EXERCISE
+                </button>
+            </div>
+        );
+    }
 
     const renderChallenge = () => {
         const parts = currentSlide.challengeQ?.split('____') || ["", ""];
@@ -404,6 +504,7 @@ const App: React.FC = () => {
                 {currentSlide.type === SlideType.INTRO && renderIntro()}
                 {currentSlide.type === SlideType.SCRIPT && renderScript()}
                 {currentSlide.type === SlideType.EXERCISE_INTRO && renderExerciseIntro()}
+                {currentSlide.type === SlideType.TIMELINE && renderTimeline()}
                 {currentSlide.type === SlideType.CHALLENGE && renderChallenge()}
                 {currentSlide.type === SlideType.OUTRO && renderOutro()}
             </div>
