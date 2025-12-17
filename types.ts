@@ -38,6 +38,7 @@ export interface PlaybookItem {
     exerciseRule?: string; // Grammar rule to show
     challengeQ?: string;
     challengeA?: string;
+    options?: string[]; // The Word Bank for Drag & Drop
     totalInSet?: number;
     currentInSet?: number;
 }
