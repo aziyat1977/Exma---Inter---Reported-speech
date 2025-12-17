@@ -1,39 +1,43 @@
-export enum AppMode {
-    STUDENT = 'student',
-    TEACHER = 'teacher',
-    KAHOOT = 'kahoot'
-}
-
-export enum ItemType {
+export enum SlideType {
+    INTRO = 'intro',
     SCRIPT = 'script',
-    EXERCISE = 'exercise'
+    EXERCISE_INTRO = 'exercise_intro',
+    CHALLENGE = 'challenge',
+    OUTRO = 'outro'
 }
 
 export interface ContentItem {
-    t: string; // 'script' or 'exercise' mapped from original data
-    // Script props
     sp?: string;
     text?: string;
     verb?: string;
-    // Exercise props
-    title?: string;
-    q?: string;
-    a?: string;
+}
+
+export interface ExerciseData {
+    title: string;
+    description: string;
+    rule?: string;
+    questions: { q: string; a: string }[];
 }
 
 export interface SceneData {
+    id: string;
     title: string;
-    type: string;
-    items: ContentItem[];
-    exercises: ContentItem[]; // Original data separates them, we will merge them for display
+    description: string;
+    script: ContentItem[];
+    exercises: ExerciseData[];
 }
 
-// Normalized display item for our components
-export interface DisplayItem {
-    id: string;
-    type: ItemType;
-    speakerOrTitle: string;
-    content: string; // Text or Question
-    highlight?: string; // Verbs
-    answer?: string;
+// The "Playbook" item - a single step in our linear user journey
+export interface PlaybookItem {
+    uuid: string;
+    type: SlideType;
+    sceneTitle?: string; // For context headers
+    sceneDesc?: string;
+    scriptContent?: ContentItem[];
+    exerciseTitle?: string;
+    exerciseRule?: string; // Grammar rule to show
+    challengeQ?: string;
+    challengeA?: string;
+    totalInSet?: number;
+    currentInSet?: number;
 }
