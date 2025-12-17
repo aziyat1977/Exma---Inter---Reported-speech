@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { ChevronRight, ChevronLeft, Film, CheckCircle, XCircle, RotateCcw, Clapperboard, Menu, X, Grid, Clock, ArrowRight } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Film, CheckCircle, XCircle, RotateCcw, Clapperboard, Menu, X, Grid, Clock, ArrowRight, BookOpen } from 'lucide-react';
 import { SCENES } from './constants';
 import { SlideType, PlaybookItem } from './types';
 
@@ -25,7 +25,8 @@ const generatePlaybook = (): PlaybookItem[] => {
             uuid: getID(),
             type: SlideType.INTRO,
             sceneTitle: scene.title,
-            sceneDesc: scene.description
+            sceneDesc: scene.description,
+            sceneDescTrans: scene.descriptionTrans
         });
 
         // 2. The Script
@@ -45,7 +46,8 @@ const generatePlaybook = (): PlaybookItem[] => {
                 sceneTitle: scene.title,
                 exerciseTitle: ex.title,
                 exerciseRule: ex.rule,
-                sceneDesc: ex.description
+                sceneDesc: ex.description,
+                exerciseTeaching: ex.teaching
             });
 
             // TIMELINE SLIDE (Before exercises)
@@ -55,7 +57,8 @@ const generatePlaybook = (): PlaybookItem[] => {
                     type: SlideType.TIMELINE,
                     sceneTitle: scene.title,
                     exerciseTitle: ex.title,
-                    timelineData: ex.timeline
+                    timelineData: ex.timeline,
+                    exerciseTeaching: ex.teaching
                 });
             }
 
@@ -86,6 +89,7 @@ const generatePlaybook = (): PlaybookItem[] => {
                     sceneTitle: scene.title,
                     exerciseTitle: ex.title,
                     exerciseRule: ex.rule,
+                    exerciseTeaching: ex.teaching,
                     challengeQ: q.q,
                     challengeA: q.a,
                     options: wordBank,
@@ -111,6 +115,7 @@ const App: React.FC = () => {
     const [droppedValue, setDroppedValue] = useState<string | null>(null);
     const [feedback, setFeedback] = useState<'neutral' | 'correct' | 'incorrect'>('neutral');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [helpLang, setHelpLang] = useState<'ru' | 'uz' | null>(null);
     const [draggedItem, setDraggedItem] = useState<string | null>(null);
     const [timelineStep, setTimelineStep] = useState(0);
 
@@ -122,14 +127,15 @@ const App: React.FC = () => {
         setFeedback("neutral");
         setDraggedItem(null);
         setTimelineStep(0);
+        setHelpLang(null); // Close help on slide change
         
         // Auto-play timeline animation sequence
         if (currentSlide.type === SlideType.TIMELINE) {
             // Step 1: Show Direct (0ms)
             // Step 2: Start Move (1500ms)
             setTimeout(() => setTimelineStep(1), 1500);
-            // Step 3: Show Reported (3500ms - after slow travel)
-            setTimeout(() => setTimelineStep(2), 3500);
+            // Step 3: Show Reported (2500ms - synced with animation duration)
+            setTimeout(() => setTimelineStep(2), 2500);
         }
 
     }, [currentIndex, currentSlide]);
@@ -185,6 +191,43 @@ const App: React.FC = () => {
 
     // --- RENDERERS ---
 
+    const renderLanguageToggle = (teaching: {ru: string, uz: string} | undefined, positionClass = "top-20 right-4") => {
+        if (!teaching) return null;
+        return (
+            <div className={`absolute ${positionClass} flex gap-2 z-40`}>
+                <button 
+                    onClick={() => setHelpLang(helpLang === 'ru' ? null : 'ru')}
+                    className={`px-3 py-1 font-bebas text-lg rounded border transition-all ${helpLang === 'ru' ? 'bg-cinema-red text-white border-cinema-red' : 'bg-black/50 text-white/50 border-white/20 hover:text-white hover:border-white'}`}
+                >
+                    RU
+                </button>
+                <button 
+                    onClick={() => setHelpLang(helpLang === 'uz' ? null : 'uz')}
+                    className={`px-3 py-1 font-bebas text-lg rounded border transition-all ${helpLang === 'uz' ? 'bg-blue-600 text-white border-blue-600' : 'bg-black/50 text-white/50 border-white/20 hover:text-white hover:border-white'}`}
+                >
+                    UZ
+                </button>
+            </div>
+        );
+    };
+
+    const renderHelpOverlay = (teaching: {ru: string, uz: string} | undefined) => {
+        if (!teaching || !helpLang) return null;
+        return (
+            <div className="absolute top-32 right-4 w-64 md:w-80 p-6 bg-black/90 border border-gold-500/50 backdrop-blur-xl rounded-lg shadow-2xl z-40 slide-enter">
+                <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-bebas text-gold-500 text-xl tracking-widest">
+                        {helpLang === 'ru' ? 'GRAMMAR NOTE' : 'QOIDA'}
+                    </h3>
+                    <button onClick={() => setHelpLang(null)}><X size={16} className="text-gray-500 hover:text-white"/></button>
+                </div>
+                <p className="font-montserrat text-white text-sm leading-relaxed">
+                    {helpLang === 'ru' ? teaching.ru : teaching.uz}
+                </p>
+            </div>
+        );
+    }
+
     const renderMenu = () => {
         const scenes = SCENES.map((scene, idx) => {
             const slideIdx = playbook.findIndex(s => s.type === SlideType.INTRO && s.sceneTitle === scene.title);
@@ -222,7 +265,10 @@ const App: React.FC = () => {
     };
 
     const renderIntro = () => (
-        <div className="flex flex-col items-center justify-center h-full text-center slide-enter p-8">
+        <div className="flex flex-col items-center justify-center h-full text-center slide-enter p-8 relative w-full">
+            {renderLanguageToggle(currentSlide.sceneDescTrans)}
+            {renderHelpOverlay(currentSlide.sceneDescTrans)}
+            
             <div className="text-gold-500 font-bebas text-2xl tracking-widest mb-4">NOW SHOWING</div>
             <h1 className="font-cinzel text-5xl md:text-7xl text-white mb-6 leading-tight drop-shadow-2xl">
                 {currentSlide.sceneTitle?.toUpperCase()}
@@ -263,7 +309,10 @@ const App: React.FC = () => {
     );
 
     const renderExerciseIntro = () => (
-        <div className="flex flex-col items-center justify-center h-full text-center slide-enter p-8 bg-black/40 backdrop-blur-sm">
+        <div className="flex flex-col items-center justify-center h-full text-center slide-enter p-8 bg-black/40 backdrop-blur-sm relative w-full">
+             {renderLanguageToggle(currentSlide.exerciseTeaching)}
+             {renderHelpOverlay(currentSlide.exerciseTeaching)}
+
              <div className="mb-6 p-4 rounded-full border-2 border-gold-500 text-gold-500 animate-pulse">
                 <Clapperboard size={48} />
              </div>
@@ -285,8 +334,6 @@ const App: React.FC = () => {
         const data = currentSlide.timelineData;
         if (!data) return null;
 
-        // Parse brackets for highlighting
-        // e.g. "I [am] Batman" -> parts: "I ", "am", " Batman"
         const parse = (text: string) => {
             const parts = text.split(/[\[\]]/);
             return {
@@ -301,30 +348,27 @@ const App: React.FC = () => {
 
         return (
             <div className="w-full h-full flex flex-col items-center justify-center relative p-8 overflow-hidden bg-black/90">
-                {/* Timeline Axis */}
-                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-700 -translate-y-1/2 z-0"></div>
-                
-                {/* Visual Elements */}
+                {renderLanguageToggle(currentSlide.exerciseTeaching)}
+                {renderHelpOverlay(currentSlide.exerciseTeaching)}
+
+                {/* THE TIME PORTAL */}
+                <div className="time-portal"></div>
+
+                {/* VISUAL ELEMENTS */}
                 <div className="flex justify-between w-full max-w-5xl relative z-10 h-64">
                     
                     {/* LEFT: DIRECT (NOW) */}
                     <div className={`
-                        flex flex-col items-start justify-center transition-all duration-1000
+                        flex flex-col items-start justify-center transition-all duration-1000 w-1/3
                         ${timelineStep >= 1 ? 'opacity-30 blur-sm scale-90' : 'opacity-100 scale-100'}
                     `}>
                          <div className="text-gold-500 font-bebas text-xl mb-2 flex items-center gap-2">
-                             <Clock size={16} /> DIRECT SPEECH
+                             <Clock size={16} /> DIRECT
                          </div>
                          <div className="text-3xl md:text-5xl font-cinzel text-white leading-tight">
                             {direct.prefix}
                             <span className="text-cinema-red font-bold inline-block relative">
                                 {direct.highlight}
-                                {/* The Moving Particle */}
-                                {timelineStep === 1 && (
-                                    <div className="absolute top-0 left-0 text-cinema-red animate-[timeline-travel_2s_ease-in-out_forwards] z-50 whitespace-nowrap">
-                                        {direct.highlight}
-                                    </div>
-                                )}
                             </span>
                             {direct.suffix}
                          </div>
@@ -333,20 +377,22 @@ const App: React.FC = () => {
                          </div>
                     </div>
 
-                    {/* CENTER ARROW (Visible during transition) */}
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-1000 ${timelineStep >= 1 ? 'opacity-100' : 'opacity-0'}`}>
-                         <ArrowRight size={48} className="text-gold-500" />
-                    </div>
+                    {/* ULTRA PARTICLE ANIMATION */}
+                    {timelineStep === 1 && (
+                        <div className="ultra-particle">
+                            {direct.highlight}
+                        </div>
+                    )}
 
                     {/* RIGHT: REPORTED (THEN) */}
                     <div className={`
-                        flex flex-col items-end justify-center text-right transition-all duration-1000 delay-500
+                        flex flex-col items-end justify-center text-right transition-all duration-1000 delay-500 w-1/3
                         ${timelineStep >= 2 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}
                     `}>
-                         <div className="text-gold-500 font-bebas text-xl mb-2">REPORTED SPEECH</div>
+                         <div className="text-gold-500 font-bebas text-xl mb-2">REPORTED</div>
                          <div className="text-3xl md:text-5xl font-cinzel text-white leading-tight">
                             {reported.prefix}
-                            <span className="text-green-400 font-bold scale-110 inline-block shadow-green-500/50 drop-shadow-[0_0_10px_rgba(74,222,128,0.5)]">
+                            <span className={`text-green-400 font-bold scale-110 inline-block drop-shadow-[0_0_10px_rgba(74,222,128,0.5)] ${timelineStep >= 2 ? 'impact-target' : ''}`}>
                                 {reported.highlight}
                             </span>
                             {reported.suffix}
@@ -360,7 +406,7 @@ const App: React.FC = () => {
                 <button 
                     onClick={nextSlide}
                     className={`
-                        mt-24 px-8 py-3 bg-white/10 border border-gold-500 text-gold-500 hover:bg-gold-500 hover:text-black transition-all duration-500 font-bebas tracking-widest z-20
+                        mt-32 px-8 py-3 bg-white/10 border border-gold-500 text-gold-500 hover:bg-gold-500 hover:text-black transition-all duration-500 font-bebas tracking-widest z-20
                         ${timelineStep >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}
                     `}
                 >
@@ -375,7 +421,9 @@ const App: React.FC = () => {
         
         return (
             <div className="flex flex-col items-center justify-center h-full w-full max-w-6xl mx-auto p-4 slide-enter relative">
-                
+                {renderLanguageToggle(currentSlide.exerciseTeaching)}
+                {renderHelpOverlay(currentSlide.exerciseTeaching)}
+
                 {/* Header Info */}
                 <div className="absolute top-0 w-full flex justify-between items-start p-6 text-xs md:text-sm font-montserrat tracking-widest text-gray-500 uppercase">
                     <div>{currentSlide.exerciseTitle}</div>

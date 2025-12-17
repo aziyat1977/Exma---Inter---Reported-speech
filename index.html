@@ -85,17 +85,57 @@
         ::-webkit-scrollbar-track { background: #1a1a1a; }
         ::-webkit-scrollbar-thumb { background: #ffd700; border-radius: 3px; }
 
-        /* Timeline Animations */
-        @keyframes timeline-travel {
-            0% { left: 10%; opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.5) rotate(5deg); box-shadow: 0 0 20px #ffd700; }
-            100% { left: 80%; opacity: 0; transform: scale(0.5); }
+        /* ULTRA TIMELINE ANIMATIONS */
+        
+        /* The glowing portal ring */
+        @keyframes portal-spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.8); opacity: 0.5; border-color: #ffd700; box-shadow: 0 0 10px #ffd700; }
+            50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.2); opacity: 1; border-color: #ff0055; box-shadow: 0 0 30px #ff0055, inset 0 0 20px #ff0055; }
+            100% { transform: translate(-50%, -50%) rotate(360deg) scale(0.8); opacity: 0.5; border-color: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        }
+
+        .time-portal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px dashed #ffd700;
+            z-index: 5;
+            animation: portal-spin 3s linear infinite;
+        }
+
+        /* The moving text particle */
+        @keyframes ultra-travel {
+            0% { left: 15%; top: 50%; transform: translate(-50%, -50%) scale(1); opacity: 1; color: #e50914; text-shadow: 0 0 5px #e50914; }
+            40% { left: 45%; top: 50%; transform: translate(-50%, -50%) scale(0.5) rotate(10deg); opacity: 1; color: #fff; }
+            50% { left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0); opacity: 0; } /* Disappear into portal */
+            60% { left: 55%; top: 50%; transform: translate(-50%, -50%) scale(0.5) rotate(-10deg); opacity: 0; color: #4ade80; }
+            100% { left: 85%; top: 50%; transform: translate(-50%, -50%) scale(1.2); opacity: 0; color: #4ade80; } /* Fade out as it arrives at destination */
         }
         
-        @keyframes reveal-slow {
-            0% { clip-path: inset(0 100% 0 0); opacity: 0.5; }
-            100% { clip-path: inset(0 0 0 0); opacity: 1; }
+        .ultra-particle {
+             position: absolute;
+             font-family: 'Cinzel', serif;
+             font-weight: bold;
+             font-size: 2rem;
+             z-index: 50;
+             animation: ultra-travel 3s cubic-bezier(0.45, 0, 0.55, 1) forwards;
         }
+
+        /* Impact effect on destination */
+        @keyframes impact-glow {
+            0% { text-shadow: 0 0 0 transparent; transform: scale(1); }
+            50% { text-shadow: 0 0 30px #4ade80; transform: scale(1.1); color: #fff; }
+            100% { text-shadow: 0 0 10px #4ade80; transform: scale(1); }
+        }
+
+        .impact-target {
+            animation: impact-glow 0.5s ease-out forwards;
+            animation-delay: 2.5s; /* Sync with particle arrival */
+        }
+
     </style>
     <script>
         tailwind.config = {
